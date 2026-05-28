@@ -1603,14 +1603,12 @@
             });
         });
 
-        /* ── TYPEWRITER HERO ── */
         const phrases = [
             'Software Engineer — Full-Stack & AI Systems',
             'Building systems that ship.',
             'TypeScript · React · Python · ML',
             'Open to full-time roles.',
         ];
-        /* inject a small subtitle below hero name */
         const heroCtas = document.querySelector('.hero-meta-row');
         const tw = document.createElement('div');
         tw.style.cssText = 'font-family:var(--mono);font-size:0.8rem;color:var(--text2);letter-spacing:0.04em;padding:1rem 0 1.5rem;min-height:2rem;';
@@ -1631,18 +1629,15 @@
         }
         setTimeout(type, 1600);
 
-        /* ── NAV ENTRANCE ── */
         navbar.style.cssText += ';opacity:0;transform:translateY(-100%)';
         setTimeout(() => {
             navbar.style.transition = 'opacity 0.5s ease,transform 0.5s cubic-bezier(0.22,1,0.36,1)';
             navbar.style.opacity = '1'; navbar.style.transform = 'translateY(0)';
         }, 100);
 
-        /* ── RESUME CONTACT BUTTON ── */
         (function () {
             const navBtn = document.getElementById('resume-btn');
             const contactBtn = document.getElementById('resume-contact-btn');
-            // Copy the data URI href from nav button to contact button
             if (navBtn && contactBtn) {
                 contactBtn.href = navBtn.href;
                 contactBtn.setAttribute('download', 'RishirajRath_Resume.pdf');
@@ -1650,15 +1645,8 @@
             }
         })();
 
-        /* ══════════════════════════════════════════
-           PIXEL DISSOLVE — scroll-driven effect
-           Headings pixelate into blocks as they
-           scroll out of view (upward), and snap
-           back cleanly when scrolling down.
-        ══════════════════════════════════════════ */
         (function initPixelDissolve() {
 
-            // Elements to apply effect to
             const SELECTORS = [
                 '.section-heading',
                 '.section-num',
@@ -1669,34 +1657,29 @@
                 '.contact-headline'
             ];
 
-            const PIXEL_SIZE = 6;    // pixel block size in px
-            const DISSOLVE_SPEED = 0.07; // how fast pixels scatter per frame
+            const PIXEL_SIZE = 6;    
+            const DISSOLVE_SPEED = 0.07; 
 
-            // Wrap each target in a dissolve container
             const targets = [];
             document.querySelectorAll(SELECTORS.join(',')).forEach(el => {
-                // skip if already wrapped
                 if (el.closest('.px-dissolve')) return;
 
                 const wrapper = document.createElement('div');
                 wrapper.className = 'px-dissolve';
                 wrapper.style.cssText = `display:block;position:relative;`;
 
-                // wrap the element
                 const inner = document.createElement('div');
                 inner.className = 'px-text';
                 el.parentNode.insertBefore(wrapper, el);
                 inner.appendChild(el);
                 wrapper.appendChild(inner);
 
-                // create canvas overlay
                 const canvas = document.createElement('canvas');
                 wrapper.appendChild(canvas);
 
                 targets.push({ wrapper, inner, el, canvas, ctx: canvas.getContext('2d'), pixels: [], state: 'normal', progress: 0 });
             });
 
-            // Snapshot the element into canvas pixels
             function snapshot(t) {
                 const rect = t.wrapper.getBoundingClientRect();
                 const w = Math.ceil(rect.width);
@@ -1711,24 +1694,21 @@
                 const ctx = t.ctx;
                 ctx.clearRect(0, 0, w, h);
 
-                // Sample the element's text color — use green accent for numbers, white for headings
                 const isNum = t.el.classList.contains('section-num') || t.el.classList.contains('proj-num') || t.el.classList.contains('hero-index');
                 const baseColor = isNum ? '#c5ff30' : '#e8e8e8';
 
-                // Draw pixelated version of the text bounds
                 const cols = Math.ceil(w / PIXEL_SIZE);
                 const rows = Math.ceil(h / PIXEL_SIZE);
 
                 t.pixels = [];
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
-                        // Only create pixels roughly where text might be (sparse grid)
                         if (Math.random() > 0.55) continue;
                         const px = {
                             x: c * PIXEL_SIZE,
                             y: r * PIXEL_SIZE,
-                            ox: c * PIXEL_SIZE,  // original x
-                            oy: r * PIXEL_SIZE,  // original y
+                            ox: c * PIXEL_SIZE,  
+                            oy: r * PIXEL_SIZE,  
                             vx: (Math.random() - 0.5) * 3,
                             vy: -(Math.random() * 2 + 0.5),
                             alpha: Math.random() * 0.6 + 0.4,
@@ -1743,7 +1723,6 @@
                 t.snapped = true;
             }
 
-            // Animation loop
             let rafId;
             function animate() {
                 targets.forEach(t => {
@@ -1780,7 +1759,6 @@
 
                         let done = 0;
                         t.pixels.forEach(p => {
-                            // spring back to origin
                             const dx = p.ox - p.x;
                             const dy = p.oy - p.y;
                             p.vx += dx * 0.18;
@@ -1812,8 +1790,7 @@
             }
             animate();
 
-            // Scroll handler — trigger dissolve when element scrolls UP past viewport
-            const DISSOLVE_THRESHOLD = 0.15; // fraction of viewport height above which we dissolve
+            const DISSOLVE_THRESHOLD = 0.15; 
             let lastScrollY = window.scrollY;
 
             window.addEventListener('scroll', () => {
@@ -1826,20 +1803,17 @@
                     const elCenter = rect.top + rect.height / 2;
 
                     if (scrollingDown) {
-                        // Element scrolling up out of view — dissolve it
                         if (elCenter < vh * DISSOLVE_THRESHOLD && t.state === 'normal') {
                             if (!t.snapped || t.pixels.length === 0) snapshot(t);
-                            // reset pixel positions to origin
                             t.pixels.forEach(p => { p.x = p.ox; p.y = p.oy; p.life = 1; });
                             t.state = 'dissolving';
                             t.canvas.style.opacity = '1';
                             t.inner.style.opacity = '0';
                         }
                     } else {
-                        // Scrolling up — element coming back into view, reform
                         if (elCenter > vh * DISSOLVE_THRESHOLD && (t.state === 'dissolving' || t.state === 'dissolved')) {
                             if (!t.snapped || t.pixels.length === 0) snapshot(t);
-                            // scatter pixels far first so reform looks dramatic
+
                             t.pixels.forEach(p => {
                                 p.x = p.ox + (Math.random() - 0.5) * 120;
                                 p.y = p.oy + Math.random() * 60 + 20;
@@ -1851,7 +1825,6 @@
                         }
                     }
 
-                    // Element fully back in normal view area — snap to normal
                     if (elCenter > vh * 0.5 && t.state === 'normal') {
                         t.canvas.style.opacity = '0';
                         t.inner.style.opacity = '1';
